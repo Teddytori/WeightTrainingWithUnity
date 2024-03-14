@@ -1,1 +1,8 @@
-
+.vs
+/Library
+/Logs
+*.vsconfig
+*.csproj
+*.sln
+/test_BurstDebugInformation_DoNotShip
+/obj
