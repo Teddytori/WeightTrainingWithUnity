@@ -12,21 +12,31 @@ public enum MainWorkOutType
     OverHeadPress
 }
 
-public enum SubWorkOutType
-{
-
-}
-
-[System.Serializable]
 public class WorkOutData
 {
-    public Dictionary<MainWorkOutType, float> MainWorkOutWeightDict = new();
-    public Dictionary<MainWorkOutType, int> MainWorkOutWeekDict = new();
+    public float SquatWeight;
+    public float BenchPressWeight;
+    public float DeadLiftWeight;
+    public float PendlayRowWeight;
+    public float OverHeadPressWeight;
+
+    public int SquatWeek;
+    public int BenchPressWeek;
+    public int DeadLiftWeek;
+    public int PendlayRowWeek;
+    public int OverHeadPressWeek;
+
     public float MainUnitWeight;
 
-    public Dictionary<SubWorkOutType, float> SubWorkOutWeightDict = new();
-    public Dictionary<SubWorkOutType, int> SubWorkOutLevelDict = new();
-    public Dictionary<SubWorkOutType, float> SubWorkOutUnitWeightDict = new();
+    public List<SubWorkOutInfo> SubWorkOutList;
+}
+
+public class SubWorkOutInfo
+{
+    public string Name;
+    public int Level;
+    public float Weight;
+    public float UnitWeight;
 }
 
 public class DataManager
@@ -45,24 +55,27 @@ public class DataManager
         }
     }
 
-    private const string FILE_NAME = "Data.dat";
-    
+    private const string FILE_NAME = "Data.json";
+    private static string FilePath => $"{Application.streamingAssetsPath}\\{FILE_NAME}";
+
     public WorkOutData UserData;
 
     public void LoadData()
     {
-        string filePath = $"{Application.streamingAssetsPath}\\{FILE_NAME}";
-        if(File.Exists(filePath) == false)
+        if(File.Exists(FilePath) == false)
         {
             UserData = new();
             return;
         }
-        
+
+        var jsonStr = File.ReadAllText(FilePath);
+        UserData = JsonUtility.FromJson<WorkOutData>(jsonStr);
     }
 
     public void SaveData()
     {
-
+        var jsonStr = JsonUtility.ToJson(UserData);
+        File.WriteAllText(FilePath, jsonStr);
     }
 }
 
