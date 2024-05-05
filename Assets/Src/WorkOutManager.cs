@@ -13,10 +13,8 @@ public class WorkOutManager : MonoBehaviour
         data = DataManager.Instance.UserData;
     }
 
-    public float GetMainSetWeight(MainWorkOutType mainType, int week)
+    public float GetMainSetWeight(float baseWeight, float unitWeight, int week)
     {
-        float baseWeight = data.MainWorkOutWeekDict[mainType];
-        float unitWeight = data.MainUnitWeight;
         int unitCount = Mathf.RoundToInt(baseWeight * Mathf.Pow(1.025f, week) / unitWeight);
 
         return unitCount * unitWeight;

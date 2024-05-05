@@ -29,6 +29,46 @@ public class WorkOutData
     public float MainUnitWeight;
 
     public List<SubWorkOutInfo> SubWorkOutList;
+
+    public float GetMainWeight(MainWorkOutType type)
+    {
+        switch (type)
+        {
+            case MainWorkOutType.Squat:
+                return SquatWeight;
+            case MainWorkOutType.BenchPress:
+                return BenchPressWeight;
+            case MainWorkOutType.DeadLift:
+                return DeadLiftWeight;
+            case MainWorkOutType.PendlayRow:
+                return PendlayRowWeight;
+            case MainWorkOutType.OverHeadPress:
+                return OverHeadPressWeight;
+        }
+
+        Debug.LogError("Unknown WorkOut : " + type);
+        return 0;
+    }
+
+    public int GetMainWeek(MainWorkOutType type)
+    {
+        switch (type)
+        {
+            case MainWorkOutType.Squat:
+                return SquatWeek;
+            case MainWorkOutType.BenchPress:
+                return BenchPressWeek;
+            case MainWorkOutType.DeadLift:
+                return DeadLiftWeek;
+            case MainWorkOutType.PendlayRow:
+                return PendlayRowWeek;
+            case MainWorkOutType.OverHeadPress:
+                return OverHeadPressWeek;
+        }
+
+        Debug.LogError("Unknown WorkOut : " + type);
+        return 0;
+    }
 }
 
 public class SubWorkOutInfo

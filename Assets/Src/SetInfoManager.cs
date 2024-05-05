@@ -2,24 +2,52 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class SetInfoManager : MonoBehaviour
 {
-    public InputField[] WeightInputs;
+    public InputField SquatInput;
+    public InputField BenchPressInput;
+    public InputField DeadLiftInput;
+    public InputField PendlayRowInput;
+    public InputField OverHeadPressInput;
+
+    public InputField MainUnitWeightInput;
+
+    public GameObject SubWorkObjRoot;
+    public List<SubWorkOutInfo> SubWorkoutInfos;
 
     void OnEnable()
     {
-        for(int i = 0; i < WeightInputs.Length; i++)
-        {
-            WeightInputs[i].text = PlayerPrefs.GetFloat(((MainWorkOutType)i).ToString(), 0f).ToString();
-        }
+        
     }
 
     public void OnClickSave()
     {
-        for(int i = 0; i < WeightInputs.Length; i++)
+        var userData = DataManager.Instance.UserData;
+        try
         {
-            PlayerPrefs.SetFloat(((MainWorkOutType)i).ToString(), float.Parse(WeightInputs[i].text));
+            userData.SquatWeight = float.Parse(SquatInput.text);
+            userData.BenchPressWeight = float.Parse(BenchPressInput.text);
+            userData.DeadLiftWeight = float.Parse(DeadLiftInput.text);
+            userData.PendlayRowWeight = float.Parse(PendlayRowInput.text);
+            userData.OverHeadPressWeight = float.Parse(OverHeadPressInput.text);
+
+            userData.MainUnitWeight = float.Parse(MainUnitWeightInput.text);
+
+            if(SubWorkoutInfos != null)
+            {
+                foreach(var subInfo in SubWorkoutInfos)
+                {
+                    userData.SubWorkOutList.Add(subInfo);
+                }
+            }
+
+            DataManager.Instance.SaveData();
+        }
+        catch (Exception)
+        {
+            Debug.LogError("Parsing Weight Error");
         }
     }
 }
