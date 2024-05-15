@@ -12,71 +12,60 @@ public enum MainWorkOutType
     OverHeadPress
 }
 
+[System.Serializable]
 public class WorkOutData
 {
-    public float SquatWeight;
-    public float BenchPressWeight;
-    public float DeadLiftWeight;
-    public float PendlayRowWeight;
-    public float OverHeadPressWeight;
+    public WorkOutData()
+    {
+        SquatInfo = new WorkoutInfo();
+        BenchPressInfo = new WorkoutInfo();
+        DeadLiftInfo = new WorkoutInfo();
+        PendlayRowInfo = new WorkoutInfo();
+        OverHeadPressInfo = new WorkoutInfo();
+        MainUnitWeight = 5f;
+        RecentDay = -1;
+    }
 
-    public int SquatWeek;
-    public int BenchPressWeek;
-    public int DeadLiftWeek;
-    public int PendlayRowWeek;
-    public int OverHeadPressWeek;
+    public WorkoutInfo SquatInfo;
+    public WorkoutInfo BenchPressInfo;
+    public WorkoutInfo DeadLiftInfo;
+    public WorkoutInfo PendlayRowInfo;
+    public WorkoutInfo OverHeadPressInfo;
 
     public float MainUnitWeight;
 
-    public List<SubWorkOutInfo> SubWorkOutList;
+    public List<SubWorkoutInfo> SubWorkOutList;
 
-    public float GetMainWeight(MainWorkOutType type)
-    {
-        switch (type)
-        {
-            case MainWorkOutType.Squat:
-                return SquatWeight;
-            case MainWorkOutType.BenchPress:
-                return BenchPressWeight;
-            case MainWorkOutType.DeadLift:
-                return DeadLiftWeight;
-            case MainWorkOutType.PendlayRow:
-                return PendlayRowWeight;
-            case MainWorkOutType.OverHeadPress:
-                return OverHeadPressWeight;
-        }
-
-        Debug.LogError("Unknown WorkOut : " + type);
-        return 0;
-    }
-
-    public int GetMainWeek(MainWorkOutType type)
-    {
-        switch (type)
-        {
-            case MainWorkOutType.Squat:
-                return SquatWeek;
-            case MainWorkOutType.BenchPress:
-                return BenchPressWeek;
-            case MainWorkOutType.DeadLift:
-                return DeadLiftWeek;
-            case MainWorkOutType.PendlayRow:
-                return PendlayRowWeek;
-            case MainWorkOutType.OverHeadPress:
-                return OverHeadPressWeek;
-        }
-
-        Debug.LogError("Unknown WorkOut : " + type);
-        return 0;
-    }
+    public int RecentDay;
 }
 
-public class SubWorkOutInfo
+[System.Serializable]
+public class WorkoutInfo
 {
-    public string Name;
-    public int Level;
+    public WorkoutInfo(float weight = 0f)
+    {
+        Week = 1;
+        Weight = weight;
+    }
+
+    public int Week;
     public float Weight;
+}
+
+[System.Serializable]
+public class SubWorkoutInfo : WorkoutInfo
+{
+    public SubWorkoutInfo(string name, float weight, float unitWeight)
+        : base(weight)
+    {
+        Name = name;
+        UnitWeight = unitWeight;
+        IsTargetDay = new bool[3] { true, true, true };
+    }
+
+    public string Name;
     public float UnitWeight;
+    public bool[] IsTargetDay;
 }
 
 public class DataManager
@@ -95,8 +84,8 @@ public class DataManager
         }
     }
 
-    private const string FILE_NAME = "Data.json";
-    private static string FilePath => $"{Application.streamingAssetsPath}\\{FILE_NAME}";
+    private const string FILE_NAME = "WeightData.json";
+    private static string FilePath => $"{Application.persistentDataPath}\\{FILE_NAME}";
 
     public WorkOutData UserData;
 
@@ -109,7 +98,16 @@ public class DataManager
         }
 
         var jsonStr = File.ReadAllText(FilePath);
-        UserData = JsonUtility.FromJson<WorkOutData>(jsonStr);
+        try
+        {
+            UserData = JsonUtility.FromJson<WorkOutData>(jsonStr);
+        }
+        catch
+        {
+            UserData = new();
+        }
+
+        UserData ??= new();
     }
 
     public void SaveData()

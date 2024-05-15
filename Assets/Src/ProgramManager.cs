@@ -11,8 +11,11 @@ public class ProgramManager : MonoBehaviour
 
     private GameObject currentPage;
 
+    public static ProgramManager Instance;
+
     void Start()
     {
+        Instance = this;
         DataManager.Instance.LoadData();
 
         BackButton.SetActive(false);
@@ -20,6 +23,7 @@ public class ProgramManager : MonoBehaviour
         {
             sub.SetActive(false);
         }
+        MainPage.SetActive(true);
     }
 
     public void OnClickBackButton()
